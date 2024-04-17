@@ -458,6 +458,7 @@ AssertFailureHandlerGuard::~AssertFailureHandlerGuard()
 {
     if (d_legacyOriginal != NULL) {
         Assert::setFailureHandlerRaw(d_legacyOriginal);
+        // Unrelated change in a separate commit
     }
     else {
         Assert::setViolationHandlerRaw(d_original);
