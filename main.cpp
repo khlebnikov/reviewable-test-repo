@@ -133,11 +133,11 @@ static bool g_permitReturningHandlerRuntimeFlag = false;
     // Flag for method 'permitOutOfPolicyReturningFailureHandler'.
 
 bsls::AtomicOperations::AtomicTypes::Pointer
-    g_violationHandler = {(void *) &Assert::failByAbort};
+    g_violationHandler = {static_cast<void *>(&Assert::failByAbort)};
     // assertion-failure handler function
 
 bsls::AtomicOperations::AtomicTypes::Pointer
-    g_handler = {(void *) NULL};
+    g_handler = {static_cats<void *>(NULL)};
     // legacy assertion-failure handler
 
 bsls::AtomicOperations::AtomicTypes::Int g_lockedFlag = {0};
