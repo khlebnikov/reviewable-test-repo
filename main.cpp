@@ -105,15 +105,13 @@ void printError(const bsls::AssertViolation& violation)
         file = "(* Empty File Name *)";
     }
 
-    // Note: level not in output until we are ready to change what gets logged
-    // by failed assertions
-//    const char *level = violation.assertLevel();
-//    if (!level) {
-//        level = "(* Unspecified Level *)";
-//    }
-//    else if (!*level) {
-//        level = "(* Empty Level *)";
-//    }
+    const char *level = violation.assertLevel();
+    if (!level) {
+        level = "(* Unspecified Level *)";
+    }
+    else if (!*level) {
+        level = "(* Empty Level *)";
+    }
 
     int line = violation.lineNumber();
 
@@ -135,11 +133,11 @@ static bool g_permitReturningHandlerRuntimeFlag = false;
     // Flag for method 'permitOutOfPolicyReturningFailureHandler'.
 
 bsls::AtomicOperations::AtomicTypes::Pointer
-    g_violationHandler = {(void *) &Assert::failByAbort};
+    g_violationHandler = {static_cast<void *>(&Assert::failByAbort)};
     // assertion-failure handler function
 
 bsls::AtomicOperations::AtomicTypes::Pointer
-    g_handler = {(void *) NULL};
+    g_handler = {static_cats<void *>(NULL)};
     // legacy assertion-failure handler
 
 bsls::AtomicOperations::AtomicTypes::Int g_lockedFlag = {0};
@@ -415,13 +413,7 @@ void Assert::failSleep(const char *comment, const char *file, int line)
 BSLS_ANNOTATION_NORETURN
 void Assert::failThrow(const char *comment, const char *file, int line)
 {
-
-#ifdef BDE_BUILD_TARGET_EXC
-# ifdef BSLS_LIBRARYFEATURES_HAS_CPP17_BASELINE_LIBRARY
-    if (0 == std::uncaught_exceptions()) {
-# else
-    if (!std::uncaught_exception()) {
-# endif
+    if (0 == bsl::uncaught_exceptions()) {
         throw AssertTestException(comment,
                                   file,
                                   line,
@@ -466,6 +458,7 @@ AssertFailureHandlerGuard::~AssertFailureHandlerGuard()
 {
     if (d_legacyOriginal != NULL) {
         Assert::setFailureHandlerRaw(d_legacyOriginal);
+        // Unrelated change in a separate commit
     }
     else {
         Assert::setViolationHandlerRaw(d_original);
