@@ -496,7 +496,7 @@ int main()
 
 int main()
 {
-    std::cout << "Hello World\n";
+    std::cout << "Hello World some more changes\n";
 }
 
 
@@ -523,7 +523,7 @@ int main()
 
 int main()
 {
-    std::cout << "Hello World\n";
+    std::cout <<     "Hello World\n";
 }
 
 
